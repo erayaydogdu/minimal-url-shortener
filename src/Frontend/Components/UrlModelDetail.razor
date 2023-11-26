@@ -1,0 +1,17 @@
+@using minimal_url_shortener.Shared.Models
+
+<div class="grid grid-cols-7 gap-2 mt-4">
+    <p class="col-span-2">
+        <a href="@Model.ShortUrl" target="_blank" class="link link-success">@Model.Id</a>
+    </p>
+    <p class="col-span-5">
+        <a href="@Model.LongUrl" target="_blank" class="link link-info">@Model.LongUrl</a>
+    </p>
+</div>
+
+
+@code
+{
+    [Parameter]
+    public UrlModel Model { get; set; } = new();
+}
