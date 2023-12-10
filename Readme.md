@@ -1,21 +1,32 @@
-# Minimal URL Shortener
+### Minimal URL Shortener with .NET Minimal API, htmx, and DaisyUI
 
-This is a small URL shortener service built with C#, LiteDB, Hashids, and htmx.
+This is a fun and efficient project that combines the power of .NET Minimal API, htmx, and DaisyUI to create a robust web application for shortening and managing URLs. This application is built with C#, LiteDB, Hashids, and leverages the minimal API capabilities for an optimal experience. The addition of htmx ensures lightweight and fast frontend interactions, while DaisyUI provides additional styling with Tailwind CSS.
 
 ## Features
 
-- Shorten long URLs to compact and shareable links.
-- Retrieve the original URL by entering the short link.
-- Minimal API for URL shortening and retrieval.
-- Lightweight and fast frontend interactions with htmx.
+1. **URL Shortening:**
+   - Shorten long URLs into compact and shareable links.
+   - Utilizes Hashids to generate unique and user-friendly hash-like ID Urls.
 
-## Stacks Used
+2. **URL Redirection:**
+   - Easily redirect the original URL by entering the short link.
 
-This project is built using the following technologies:
+3. **Minimal API:**
+   - This is not a REST API; It's more likely BFF approach.
+   - Returns HTML contents for AJAX calls, providing a tailored and efficient frontend interaction.
 
-- **LiteDB:** A simple and lightweight NoSQL database for storing URLs.
-- **Hashids:** A small and efficient library to generate unique hash-like IDs.
-- **htmx:** A JavaScript library for enhancing web pages with minimal JavaScript.
+4. **Frontend Interactions:**
+   - Lightweight and fast interactions powered by htmx for an efficient user experience.
+
+## Technology Stack
+
+This project makes use of the following technologies:
+
+- **.NET Minimal API:** Leveraging the minimal API capabilities for a streamlined and efficient backend.
+- **LiteDB:** A simple and lightweight NoSQL database used for storing URLs.
+- **Hashids:** An efficient library for generating unique and human-readable hash-like IDs.
+- **htmx:** A JavaScript library that enhances web pages with minimal JavaScript for seamless interactions.
+- **DaisyUI with Tailwind CSS:** Additional styling and UI components provided by DaisyUI for a polished and aesthetic interface.
 
 ## Getting Started
 
@@ -25,3 +36,4 @@ Follow these steps to set up and run the URL shortener service on your local mac
    ```bash
    git clone https://github.com/erayaydogdu/url-shortener.git
    cd url-shortener
+   ```
