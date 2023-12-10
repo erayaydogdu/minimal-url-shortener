@@ -23,5 +23,5 @@ Follow these steps to set up and run the URL shortener service on your local mac
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/url-shortener.git
+   git clone https://github.com/erayaydogdu/url-shortener.git
    cd url-shortener
