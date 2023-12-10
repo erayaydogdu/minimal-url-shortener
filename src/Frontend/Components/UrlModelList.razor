@@ -17,9 +17,12 @@
               <tr class="">
                 <td class="px-4 py-3 border">
                   <div class="flex items-center text-sm">
-                    <div class="">
-                      <a class="font-semibold text-black" href="@item.ShortUrl">@item.ShortUrl</a> <br />
-                      <a class="text-xs text-muted" href="@item.LongUrl">@item.LongUrl</a>
+                    <div class="px-4">
+                      <span class="material-icons text-success">http</span>
+                    </div>
+                    <div class="min-w-[12rem] max-w-[20rem] whitespace-normal">
+                      <a class="font-semibold text-black" href="@item.ShortUrl">@item.ShortUrl</a> <br/>
+                      <a class="text-xs text-muted whitespace-normal" href="@item.LongUrl" target="_blank">@(item.LongUrl.Length > 75 ? item.LongUrl.Substring(0,75) + "..." : item.LongUrl)</a>
                     </div>
                   </div>
                 </td>
@@ -40,19 +43,16 @@
   <div class="container mx-auto font-mono">
     <nav>
       <ul class="flex">
-        @if (Model.Page > 1)
-        {
-          <li>
-            <a class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
-               hx-get="/history?p=@{Model.Page - 1}"
-               hx-target="#urls"
-               hx-swap="innerHTML"
-               href="#"
-               hx-indicator="#ind">
-              <span class="material-icons text-sm">keyboard_arrow_left</span>
-            </a>
-          </li>
-        }
+        <li>
+          <a class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
+             hx-get="/history?p=@(Model.Page > 1 ? Model.Page - 1 : Model.Page)"
+             hx-target="#urls"
+             hx-swap="innerHTML"
+             href="#"
+             hx-indicator="#ind">
+            <span class="material-icons text-sm">keyboard_arrow_left</span>
+          </a>
+        </li>
         @for (var i = 1; i <= Model.TotalPages; i++)
         {
           <li>

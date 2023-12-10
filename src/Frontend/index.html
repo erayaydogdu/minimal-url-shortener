@@ -14,7 +14,7 @@
 <form class="grid grid-cols-7 m-4 gap-2" 
       hx-post="/shorten"
       hx-target="#urls"
-      hx-swap="afterbegin"
+      hx-swap="innerHTML"
       hx-indicator="#ind">
     <input class="col-span-5 input input-bordered" 
            type="url" 
@@ -24,6 +24,7 @@
            placeholder="Enter your long url here"
     />
     <button class="btn btn-accent col-span-2">
+        <span class="material-icons text-md">link</span>
         Short it!
     </button>
 </form>

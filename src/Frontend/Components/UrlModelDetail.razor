@@ -35,7 +35,11 @@
     </div>
   </div>
 </section>
-
+<button class="btn btn-outline btn-success"
+         hx-get="/history?p=" hx-swap="innerHTML" hx-target="#urls">
+  <span class="material-icons text-sm">keyboard_arrow_left</span>
+  View All
+</button>
 </div>
 @code
 {

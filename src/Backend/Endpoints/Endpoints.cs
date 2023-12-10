@@ -14,21 +14,24 @@ public static class Endpoints
         Hashids _hashIds = new Hashids("SuperSecretSaltKey", 6);
         
         app.MapGet("/favicon.ico", () => Results.File("favicon.ico"));
-        app.MapGet("/history", (string p, [FromServices] ILiteDatabase _context) => 
+        app.MapGet("/history", (HttpContext context, [FromServices] ILiteDatabase _context) => 
         {
+            var p = context.Request.Query["p"].ToString();
+            var baseUrl = UrlExtensions.GetAppUrl(context.Request);
             int pageSize = 10, page = 1;
             if (!string.IsNullOrEmpty(p))
                 int.TryParse(p, out page);
             var db = _context.GetCollection<UrlModel>();
             var entries = db.Query().OrderByDescending(urlModel => urlModel.Id);
             var model = PagedList<UrlModel>.Create(entries,page,pageSize);
-            model.Items.ForEach(l=>l.ShortUrl = "http://localhost:5148/"+l.ShortUrl);
+            model.Items.ForEach(l=>l.ShortUrl = baseUrl+l.ShortUrl);
             return RazorExtensions.Component<UrlModelList>(model);
         });
         app.MapPost("/shorten", async (HttpContext context, [FromServices] ILiteDatabase _context) =>
         {
             var form = await context.Request.ReadFormAsync();
             var longUrl = form.ContainsKey("longurl") ? form["longurl"].ToString() : string.Empty;
+            var baseUrl = UrlExtensions.GetAppUrl(context.Request);
             if (string.IsNullOrEmpty(longUrl))
                 return RazorExtensions.Component<Empty>();
             var db = _context.GetCollection<UrlModel>(BsonAutoId.Int32);
@@ -38,6 +41,7 @@ public static class Endpoints
             var id = db.Insert(model);
             model.ShortUrl =  _hashIds.Encode(id);
             db.Update(model);
+            model.ShortUrl= baseUrl+model.ShortUrl;
             return RazorExtensions.Component<UrlModelDetail>(model);
         });
 
