@@ -1,33 +1,44 @@
 <!doctype html>
-<html>
+<html  lang="en">
 <head>
     <script src="https://unpkg.com/htmx.org@1.9.5" type="text/javascript"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>Minimal Url Shortener</title>
 </head>
 <body class="container max-w-xl mx-auto">
-<h1 class="font-bold text-2xl my-16">Url Shorthener Service</h1>
+<h1 class="font-bold text-2xl my-16">Url Shortener Service</h1>
 
 <form class="grid grid-cols-7 m-4 gap-2" 
       hx-post="/shorten"
       hx-target="#urls"
-      hx-swap="appendHTML"
+      hx-swap="afterbegin"
       hx-indicator="#ind">
-    <input class="col-span-5 input input-bordered" type="text" name="longUrl" value="" />
+    <input class="col-span-5 input input-bordered" 
+           type="url" 
+           name="longUrl" 
+           id="longUrl" 
+           value=""
+           placeholder="Enter your long url here"
+    />
     <button class="btn btn-accent col-span-2">
         Short it!
     </button>
 </form>
 <div class="container max-w-xl mx-auto">
-    <progress id="ind" class="htmx-indicator progress progress-primary w-56"></progress>
+    <progress id="ind" class="htmx-indicator progress progress-primary w-full"></progress>
 </div>
 
-<h4 class="font-bold text-2xl my-16">Links:</h4>
-<div id="urls" class="my-8">
+<div id="urls" class="flex my-8 gap-8" hx-get="/history?p=" hx-trigger="load" hx-swap="innerHTML">
     
 </div>
 
 </body>
-
+<script>
+    function copyText(value) {
+        navigator.clipboard.writeText(value);
+    }
+</script>
 </html>

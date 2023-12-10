@@ -14,7 +14,17 @@ public static class Endpoints
         Hashids _hashIds = new Hashids("SuperSecretSaltKey", 6);
         
         app.MapGet("/favicon.ico", () => Results.File("favicon.ico"));
-
+        app.MapGet("/history", (string p, [FromServices] ILiteDatabase _context) => 
+        {
+            int pageSize = 10, page = 1;
+            if (!string.IsNullOrEmpty(p))
+                int.TryParse(p, out page);
+            var db = _context.GetCollection<UrlModel>();
+            var entries = db.Query().OrderByDescending(urlModel => urlModel.Id);
+            var model = PagedList<UrlModel>.Create(entries,page,pageSize);
+            model.Items.ForEach(l=>l.ShortUrl = "http://localhost:5148/"+l.ShortUrl);
+            return RazorExtensions.Component<UrlModelList>(model);
+        });
         app.MapPost("/shorten", async (HttpContext context, [FromServices] ILiteDatabase _context) =>
         {
             var form = await context.Request.ReadFormAsync();
@@ -26,12 +36,12 @@ public static class Endpoints
             model.LongUrl = longUrl;
             model.CreatedAt = DateTime.Now;
             var id = db.Insert(model);
-            model.ShortUrl = _hashIds.Encode(id);
+            model.ShortUrl =  _hashIds.Encode(id);
             db.Update(model);
             return RazorExtensions.Component<UrlModelDetail>(model);
         });
 
-        app.MapGet("/{shortUrl}", ([FromQuery] string shortUrl, [FromServices] ILiteDatabase _context) =>
+        app.MapGet("/{shortUrl}", (string shortUrl, [FromServices] ILiteDatabase _context) =>
         {
             var id = _hashIds.Decode(shortUrl);
             var tempId = id[0];
