@@ -23,6 +23,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Create Docker Image
         run: dotnet publish -c Release -p:ContainerImageName=${{ secrets.DOCKER_USERNAME }}/minimal-url-shortener -p:RuntimeIdentifier=linux-arm64
       - name: Docker Login
