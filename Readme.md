@@ -2,6 +2,8 @@
 
 This is a fun and lightweight project that combines the power of .NET Minimal API, htmx, and DaisyUI to create a robust web application for shortening and managing URLs. This application is built with C#, LiteDB, Hashids, and leverages the minimal API capabilities for an optimal experience. The addition of htmx ensures lightweight and fast frontend interactions, while DaisyUI provides additional styling with Tailwind CSS.
 
+[![dotnet-cicd](https://github.com/erayaydogdu/minimal-url-shortener/actions/workflows/dotnet.yaml/badge.svg)](https://github.com/erayaydogdu/minimal-url-shortener/actions/workflows/dotnet.yaml)
+
 ## Getting Started
 
 Follow one of these steps to set up and run the URL shortener service on your local machine:
@@ -14,8 +16,8 @@ Follow one of these steps to set up and run the URL shortener service on your lo
 
 **or run Docker:**
    ```bash 
-   docker network create mus || true docker run -p 5148:8080 --name mus --network mus -v data_mus:/app --user root erayaydogdu/minimal-url-shortener
-   # When the container is up and running you can visit: http://mus:5148/
+   docker run -p 5148:8080 --name mus -v data_mus:/app --user root erayaydogdu/minimal-url-shortener
+   # http://localhost:5148/
    ```
 
 
