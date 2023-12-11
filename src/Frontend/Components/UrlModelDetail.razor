@@ -17,7 +17,7 @@
             <div class="flex items-center text-sm">
               <div class="">
                 <a class="font-semibold text-black" href="@Model.ShortUrl">@Model.ShortUrl</a> <br />
-                <a class="text-xs text-muted" href="@Model.LongUrl">@Model.LongUrl</a>
+                <a class="text-xs text-muted" href="@Model.LongUrl">@(Model.LongUrl.Length > 75 ? Model.LongUrl.Substring(0,75) + "..." : Model.LongUrl)</a>
               </div>
             </div>
           </td>

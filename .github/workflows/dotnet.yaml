@@ -2,13 +2,6 @@ name: dotnet-cicd
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      push_to_docker:
-        type: boolean
-        description: Docker Push
 jobs:
   build:
     name: Build

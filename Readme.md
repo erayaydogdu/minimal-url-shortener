@@ -14,7 +14,7 @@ Follow one of these steps to set up and run the URL shortener service on your lo
 
 **or run Docker:**
    ```bash 
-   docker run -p 5148:5148 --name mus erayaydogdu/minimal-url-shortener
+   docker network create mus || true docker run -p 5148:8080 --name mus --network mus -v data_mus:/app --user root erayaydogdu/minimal-url-shortener
    # When the container is up and running you can visit: http://mus:5148/
    ```
 

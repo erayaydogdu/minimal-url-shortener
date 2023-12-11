@@ -19,9 +19,7 @@ builder.Services.AddCors
 );
 builder.Services.AddSingleton<ILiteDatabase, LiteDatabase>(_ => new LiteDatabase("minimal-url-shortener.db"));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 var app = builder.Build();
-app.UseSwagger();
 app.AddHtmxEndpoints();
 var fileOptions = new DefaultFilesOptions();
 fileOptions.DefaultFileNames.Clear();
@@ -33,6 +31,5 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Frontend"))
 });
-app.UseSwaggerUI();
 app.UseCors("default-policy");
 app.Run();
