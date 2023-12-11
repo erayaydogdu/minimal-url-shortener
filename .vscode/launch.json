@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/minimal-url-shortener/bin/Debug/net6.0/minimal-url-shortener.dll",
+            "program": "${workspaceFolder}/minimal-url-shortener/bin/Debug/net8.0/minimal-url-shortener.dll",
             "args": [],
             "cwd": "${workspaceFolder}/minimal-url-shortener",
             "stopAtEntry": false,

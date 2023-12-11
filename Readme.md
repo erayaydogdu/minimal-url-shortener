@@ -1,6 +1,23 @@
 ### Minimal URL Shortener with .NET Minimal API, htmx, and DaisyUI
 
-This is a fun and efficient project that combines the power of .NET Minimal API, htmx, and DaisyUI to create a robust web application for shortening and managing URLs. This application is built with C#, LiteDB, Hashids, and leverages the minimal API capabilities for an optimal experience. The addition of htmx ensures lightweight and fast frontend interactions, while DaisyUI provides additional styling with Tailwind CSS.
+This is a fun and lightweight project that combines the power of .NET Minimal API, htmx, and DaisyUI to create a robust web application for shortening and managing URLs. This application is built with C#, LiteDB, Hashids, and leverages the minimal API capabilities for an optimal experience. The addition of htmx ensures lightweight and fast frontend interactions, while DaisyUI provides additional styling with Tailwind CSS.
+
+## Getting Started
+
+Follow one of these steps to set up and run the URL shortener service on your local machine:
+
+**Clone the Repository:**
+   ```bash
+   git clone https://github.com/erayaydogdu/minimal-url-shortener.git
+   cd minimal-url-shortener
+   ```
+
+**or run Docker:**
+   ```bash 
+   docker run -p 5148:5148 --name mus erayaydogdu/minimal-url-shortener
+   # When the container is up and running you can visit: http://mus:5148/
+   ```
+
 
 ## Features
 
@@ -27,13 +44,3 @@ This project makes use of the following technologies:
 - **Hashids:** An efficient library for generating unique and human-readable hash-like IDs.
 - **htmx:** A JavaScript library that enhances web pages with minimal JavaScript for seamless interactions.
 - **DaisyUI with Tailwind CSS:** Additional styling and UI components provided by DaisyUI for a polished and aesthetic interface.
-
-## Getting Started
-
-Follow these steps to set up and run the URL shortener service on your local machine:
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/erayaydogdu/url-shortener.git
-   cd url-shortener
-   ```
