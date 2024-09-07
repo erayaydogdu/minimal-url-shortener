@@ -1,0 +1,17 @@
+# Classify all .cs files as C#
+*.cs linguist-language=C#
+
+# Classify .cshtml files (Razor views) as HTML+Razor
+*.cshtml linguist-language=HTML
+
+# Ignore minified files (e.g., JavaScript, CSS)
+*.min.js linguist-vendored
+*.min.css linguist-vendored
+
+# Ignore libraries in node_modules (if using Node.js with C#)
+node_modules/* linguist-vendored
+
+# Ignore auto-generated files
+*.designer.cs linguist-generated
+*.g.cs linguist-generated
+*.generated.cs linguist-generated
