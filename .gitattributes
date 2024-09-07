@@ -4,7 +4,7 @@
 # Classify .cshtml files (Razor views) as HTML+Razor
 *.html linguist-language=HTML
 
-*.cshtml linguist-vendored
+*.razor linguist-vendored
 
 # Ignore minified files (e.g., JavaScript, CSS)
 *.min.js linguist-vendored
