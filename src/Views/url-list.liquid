@@ -1,0 +1,31 @@
+{% if items.size == 0 %}
+<p class="py-12 text-center opacity-60">No short URLs yet. Paste a link above to create one.</p>
+{% else %}
+<div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Short URL</th>
+        <th class="w-0"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        {% render 'url-row', item: item %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if totalPages > 1 %}
+<nav class="mt-4 flex justify-center" aria-label="Pages">
+  <div class="join" hx-target:inherited="#urls" hx-indicator:inherited="#ind">
+    <button class="join-item btn" hx-get="/history?p={{ page | minus: 1 }}" aria-label="Previous page"{% unless hasPrevious %} disabled{% endunless %}>&laquo;</button>
+    {% for n in pages %}
+      <button class="join-item btn{% if n == page %} btn-active{% endif %}" hx-get="/history?p={{ n }}"{% if n == page %} aria-current="page"{% endif %}>{{ n }}</button>
+    {% endfor %}
+    <button class="join-item btn" hx-get="/history?p={{ page | plus: 1 }}" aria-label="Next page"{% unless hasNext %} disabled{% endunless %}>&raquo;</button>
+  </div>
+</nav>
+{% endif %}
+{% endif %}

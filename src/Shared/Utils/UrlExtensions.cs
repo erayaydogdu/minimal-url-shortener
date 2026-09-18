@@ -1,17 +1,7 @@
 namespace minimal_url_shortener.Shared.Utils;
 
-public class UrlExtensions
+public static class UrlExtensions
 {
-    public static string GetAppUrl(HttpRequest request)
-    {
-        var uriBuilder = new UriBuilder(request.Scheme, 
-            request.Host.Host, 
-            request.Host.Port ?? -1);
-        if (uriBuilder.Uri.IsDefaultPort)
-        {
-            uriBuilder.Port = -1;
-        }
-        var baseUri = uriBuilder.Uri.AbsoluteUri;
-        return baseUri;
-    }
+    // "https://host[:port]/" for the current request; the port is omitted when it is the default one.
+    public static string GetAppUrl(HttpRequest request) => $"{request.Scheme}://{request.Host}/";
 }

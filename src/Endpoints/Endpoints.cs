@@ -1,69 +1,51 @@
 using HashidsNet;
 using LiteDB;
-using minimal_url_shortener.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
-using minimal_url_shortener.Frontend.Components;
+using minimal_url_shortener.Shared.Models;
 using minimal_url_shortener.Shared.Utils;
 
-namespace minimal_url_shortener.Backend.Endpoints;
+namespace minimal_url_shortener.Endpoints;
 
 public static class Endpoints
 {
+    private const int PageSize = 10;
+
     public static void AddHtmxEndpoints(this WebApplication app)
     {
-        Hashids _hashIds = new Hashids("SuperSecretSaltKey", 6);
-        
-        app.MapGet("/favicon.ico", () => Results.File("favicon.ico"));
-        app.MapGet("/history", (HttpContext context, [FromServices] ILiteDatabase _context) => 
+        app.MapGet("/history", (HttpContext http, ILiteCollection<UrlModel> urls, IHashids hashids, Views views,
+            [FromQuery(Name = "p")] string? p) =>
         {
-            var p = context.Request.Query["p"].ToString();
-            var baseUrl = UrlExtensions.GetAppUrl(context.Request);
-            int pageSize = 10, page = 1;
-            if (!string.IsNullOrEmpty(p))
-                int.TryParse(p, out page);
-            var db = _context.GetCollection<UrlModel>();
-            var entries = db.Query().OrderByDescending(urlModel => urlModel.Id);
-            var model = PagedList<UrlModel>.Create(entries,page,pageSize);
-            model.Items.ForEach(l=>l.ShortUrl = baseUrl+l.ShortUrl);
-            return RazorExtensions.Component<UrlModelList>(model);
-        });
-        app.MapPost("/shorten", async (HttpContext context, [FromServices] ILiteDatabase _context) =>
-        {
-            var form = await context.Request.ReadFormAsync();
-            var longUrl = form.ContainsKey("longurl") ? form["longurl"].ToString() : string.Empty;
-            var baseUrl = UrlExtensions.GetAppUrl(context.Request);
-            if (string.IsNullOrEmpty(longUrl))
-                return RazorExtensions.Component<Empty>();
-            var db = _context.GetCollection<UrlModel>(BsonAutoId.Int32);
-            var model = new UrlModel();
-            model.LongUrl = longUrl;
-            model.CreatedAt = DateTime.Now;
-            var id = db.Insert(model);
-            model.ShortUrl =  _hashIds.Encode(id);
-            db.Update(model);
-            model.ShortUrl= baseUrl+model.ShortUrl;
-            return RazorExtensions.Component<UrlModelDetail>(model);
+            _ = int.TryParse(p, out var page); // junk falls back to page 1 (PagedList clamps it)
+            return RenderList(http, urls, hashids, views, page);
         });
 
-        app.MapGet("/{shortUrl}", (string shortUrl, [FromServices] ILiteDatabase _context) =>
+        app.MapPost("/shorten", async (HttpContext http, ILiteCollection<UrlModel> urls, IHashids hashids, Views views,
+            [FromForm] string? longUrl) =>
         {
-            var id = _hashIds.Decode(shortUrl);
-            var tempId = id[0];
-            var db = _context.GetCollection<UrlModel>();
-            var entry = db.Query().Where(x => x.Id.Equals(tempId)).ToList().FirstOrDefault();
-            if (entry != null) return Results.Redirect(entry.LongUrl);
-            return RazorExtensions.Component<Empty>();
-        });
-        
-        app.MapGet("/d/{shortUrl}", (string shortUrl, ILiteDatabase _context) =>
-        {
-            var id = _hashIds.Decode(shortUrl);
-            var tempId = id[0];
-            var db = _context.GetCollection<UrlModel>();
-            var entry = db.Query().Where(x => x.Id.Equals(tempId)).ToList().FirstOrDefault();
-            if (entry != null) return RazorExtensions.Component<UrlModelDetail>(entry);
-            return RazorExtensions.Component<Empty>();
-        });
-        
+            longUrl = longUrl?.Trim();
+            if (!Uri.TryCreate(longUrl, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+                return await views.Render("error", new ErrorView("Please enter a valid http(s) URL."),
+                    StatusCodes.Status422UnprocessableEntity);
+
+            urls.Insert(new UrlModel { LongUrl = longUrl!, CreatedAt = DateTime.UtcNow });
+            return await RenderList(http, urls, hashids, views, page: 1);
+        }).DisableAntiforgery();
+
+        // Static files are skipped for any request that matches an endpoint, so this catch-all only accepts
+        // word characters (no dots); otherwise it would swallow /favicon.ico and /index.html.
+        app.MapGet("/{code:regex(^\\w+$)}", (string code, ILiteCollection<UrlModel> urls, IHashids hashids) =>
+            hashids.TryDecodeSingle(code, out var id) && urls.FindById(id) is { } entry
+                ? Results.Redirect(entry.LongUrl)
+                : Results.NotFound());
+    }
+
+    private static Task<IResult> RenderList(HttpContext http, ILiteCollection<UrlModel> urls, IHashids hashids,
+        Views views, int page)
+    {
+        var baseUrl = UrlExtensions.GetAppUrl(http.Request);
+        var model = PagedList<UrlModel>
+            .Create(urls.Query().OrderByDescending(x => x.Id), page, PageSize)
+            .Map(x => new UrlView(baseUrl + hashids.Encode(x.Id), x.LongUrl));
+        return views.Render("url-list", model);
     }
 }

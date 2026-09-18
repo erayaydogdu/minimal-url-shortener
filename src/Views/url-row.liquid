@@ -1,0 +1,17 @@
+<tr>
+  <td class="w-full max-w-0">
+    <a class="link link-primary font-semibold" href="{{ item.shortUrl }}">{{ item.shortUrl }}</a>
+    <a class="block truncate text-xs opacity-60" href="{{ item.longUrl }}" title="{{ item.longUrl }}" target="_blank" rel="noopener noreferrer">{{ item.longUrl }}</a>
+  </td>
+  <td class="text-right">
+    <button type="button" class="btn btn-ghost btn-sm btn-square" data-copy="{{ item.shortUrl }}" aria-label="Copy short URL" title="Copy short URL">
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <svg class="hidden size-5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </button>
+  </td>
+</tr>

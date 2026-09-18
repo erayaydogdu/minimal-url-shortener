@@ -1,56 +1,78 @@
 <!doctype html>
-<html  lang="en">
+<html lang="en">
 <head>
-    <script src="https://unpkg.com/htmx.org@1.9.5" type="text/javascript"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Minimal Url Shortener</title>
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js"
+            integrity="sha384-BvJpBiO8Kh31EqtJe5DRIeWrHWnCGkwytKs9NKFi86Hhw96dEqdEMzZDeK9iEGTc"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.7.42/daisyui.css" rel="stylesheet" type="text/css"
+          integrity="sha384-e8Nt+0vxrVBiQZ1s8Dw8DmkBPcdWW/1UA/JF7dVLwnMluTZlm5fX/69H6nEO+QGU"
+          crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"
+            integrity="sha384-2ql948lIdLcGEE0/qxNiudyTjgauA3RDJERu5xW75kFCvSl5a9odyQYCb6tEjnmB"
+            crossorigin="anonymous"></script>
 </head>
-<body class="container max-w-xl mx-auto">
-<div class="text-center">
-    <svg class="w-32 mx-auto text-accent" width="65px" height="65px" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M74 211.658C99.0457 142.251 155.836 87.1314 226.717 108.765C276.177 123.861 255.428 151.992 274.648 170.486C285.492 178.829 314.933 167.631 322.548 178.047C329.28 187.259 324.416 204.065 322.548 215.097C315.179 258.597 265.313 265 223.065 265" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M325 194C321.518 187.392 313.572 181.214 304 176" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M132.242 181.22C129.728 194.908 90.9731 288.143 131.095 296.086C205.608 306.73 196.665 221.971 196.665 169" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M234 168V173" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <h1 class="font-bold text-2xl my-4">
-        Url Shortener Service
-    </h1>
-</div>
+<body class="min-h-screen bg-base-200">
+<main class="mx-auto max-w-2xl p-4">
+    <header class="py-6 text-center">
+        <svg class="mx-auto w-24 text-accent" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M74 211.658C99.0457 142.251 155.836 87.1314 226.717 108.765C276.177 123.861 255.428 151.992 274.648 170.486C285.492 178.829 314.933 167.631 322.548 178.047C329.28 187.259 324.416 204.065 322.548 215.097C315.179 258.597 265.313 265 223.065 265" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M325 194C321.518 187.392 313.572 181.214 304 176" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M132.242 181.22C129.728 194.908 90.9731 288.143 131.095 296.086C205.608 306.73 196.665 221.971 196.665 169" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M234 168V173" stroke="currentColor" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="mt-2 text-2xl font-bold">Url Shortener Service</h1>
+    </header>
 
+    <!-- Success swaps the refreshed list into #urls; a 422 puts the error message into #errors instead. -->
+    <form class="join w-full"
+          hx-post="/shorten"
+          hx-target="#urls"
+          hx-indicator="#ind"
+          hx-status:422="target:#errors"
+          hx-on:htmx:before:request="document.getElementById('errors').replaceChildren()"
+          hx-on:htmx:after:request="if (event.detail.ctx.response?.status < 400) this.reset()">
+        <input class="input join-item w-full"
+               type="url"
+               name="longUrl"
+               required
+               autofocus
+               placeholder="Enter your long url here"
+               aria-label="Long URL" />
+        <button class="btn btn-accent join-item">Short it!</button>
+    </form>
+    <div id="errors" class="mt-2" aria-live="polite"></div>
 
-<form class="grid grid-cols-7 m-4 gap-2" 
-      hx-post="/shorten"
-      hx-target="#urls"
-      hx-swap="innerHTML"
-      hx-indicator="#ind">
-    <input class="col-span-5 input input-bordered" 
-           type="url" 
-           name="longUrl" 
-           id="longUrl" 
-           value=""
-           placeholder="Enter your long url here"
-    />
-    <button class="btn btn-accent col-span-2">
-        <span class="material-icons text-md">link</span>
-        Short it!
-    </button>
-</form>
-<div class="container max-w-xl mx-auto">
-    <progress id="ind" class="htmx-indicator progress progress-primary w-full"></progress>
-</div>
+    <progress id="ind" class="htmx-indicator progress progress-accent mt-2 w-full"></progress>
 
-<div id="urls" class="flex my-8 gap-8" hx-get="/history?p=" hx-trigger="load" hx-swap="innerHTML">
-    
-</div>
+    <div id="urls" class="mt-4" hx-get="/history" hx-trigger="load"></div>
+</main>
 
-</body>
 <script>
-    function copyText(value) {
-        navigator.clipboard.writeText(value);
-    }
+    // One delegated handler covers every copy button, including rows htmx adds later.
+    document.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-copy]');
+        if (!button) return;
+
+        try {
+            await navigator.clipboard.writeText(button.dataset.copy);
+        } catch {
+            // navigator.clipboard only exists on https/localhost; fall back to a manual copy.
+            window.prompt('Copy this link:', button.dataset.copy);
+            return;
+        }
+
+        const [copyIcon, doneIcon] = button.querySelectorAll('svg');
+        copyIcon.classList.add('hidden');
+        doneIcon.classList.remove('hidden');
+        setTimeout(() => {
+            copyIcon.classList.remove('hidden');
+            doneIcon.classList.add('hidden');
+        }, 1500);
+    });
 </script>
+</body>
 </html>

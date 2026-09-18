@@ -1,35 +1,24 @@
 using HashidsNet;
 using LiteDB;
-using Microsoft.Extensions.FileProviders;
-using minimal_url_shortener.Backend.Endpoints;
+using minimal_url_shortener.Endpoints;
+using minimal_url_shortener.Shared.Models;
+using minimal_url_shortener.Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     Args = args,
-    WebRootPath = "Frontend"
+    WebRootPath = "Views" // index.html, favicon and the Liquid templates all live here
 });
-builder.Services.AddRazorComponents();
-builder.Services.AddCors
-(
-    cors => cors
-        .AddPolicy(name: "default-policy", policy => policy
-            .AllowAnyHeader()
-            .AllowAnyOrigin()
-            .AllowAnyMethod())
-);
-builder.Services.AddSingleton<ILiteDatabase, LiteDatabase>(_ => new LiteDatabase("minimal-url-shortener.db"));
-builder.Services.AddEndpointsApiExplorer();
+
+var config = builder.Configuration;
+var salt = config["Hashids:Salt"] ?? throw new InvalidOperationException("Hashids:Salt is not configured.");
+builder.Services.AddSingleton<IHashids>(new Hashids(salt, config.GetValue("Hashids:MinLength", 6)));
+builder.Services.AddSingleton<ILiteDatabase>(_ => new LiteDatabase(config.GetConnectionString("Db") ?? "minimal-url-shortener.db"));
+builder.Services.AddSingleton(sp => sp.GetRequiredService<ILiteDatabase>().GetCollection<UrlModel>(BsonAutoId.Int32));
+builder.Services.AddSingleton<Views>();
+
 var app = builder.Build();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.AddHtmxEndpoints();
-var fileOptions = new DefaultFilesOptions();
-fileOptions.DefaultFileNames.Clear();
-fileOptions.DefaultFileNames.Add("index.html");
-fileOptions.DefaultFileNames.Add("styles.css");
-fileOptions.DefaultFileNames.Add("favicon.ico");
-app.UseDefaultFiles(fileOptions);
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Frontend"))
-});
-app.UseCors("default-policy");
 app.Run();
